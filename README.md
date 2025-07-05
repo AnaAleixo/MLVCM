@@ -47,4 +47,57 @@ Os dados foram obtidos de fontes públicas, como sistemas de estatísticas de se
 Os dados estão disponibilizados sob a licença [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
 > **Nota:** Se houver dados sensíveis, confidenciais ou restritos, eles **não estão incluídos** neste repositório.
+>
+> ## 📊 Acesso estruturado aos dados no notebook
+
+Este projeto utiliza três arquivos de dados:
+
+- `dados_2015_2019.csv` → hospedado no GitHub
+- `dados_2020_2024.csv` → hospedado no GitHub
+- `dados_geral_sem_jan2025.csv` → armazenado no Google Drive (uso pessoal)
+
+### ✅ Bloco de código inicial (para usar no Colab)
+
+```python
+import pandas as pd
+from google.colab import drive
+
+# URLs públicas do GitHub
+URL_DADOS_2015_2019 = "https://raw.githubusercontent.com/AnaAleixo/MLVCM/main/dados_2015_2019.csv"
+URL_DADOS_2020_2024 = "https://raw.githubusercontent.com/AnaAleixo/MLVCM/main/dados_2020_2024.csv"
+
+# Montar o Google Drive
+drive.mount('/content/drive', force_remount=True)
+
+# Caminho local no Drive
+CAMINHO_DADOS_GERAL = "/content/drive/MyDrive/dados_geral_sem_jan2025.csv"
+
+# Função para carregar sob demanda
+def carregar_dados(origem, tipo='url'):
+    """
+    Carrega um DataFrame de URL (GitHub) ou caminho local (Drive).
+    """
+    try:
+        if tipo == 'url':
+            df = pd.read_csv(origem)
+            print(f"✅ Dados carregados da URL: {origem.split('/')[-1]}")
+        elif tipo == 'local':
+            df = pd.read_csv(origem)
+            print(f"✅ Dados carregados do Drive: {origem}")
+        else:
+            print("❌ Tipo de origem inválido. Use 'url' ou 'local'.")
+            return None
+        return df
+    except Exception as e:
+        print("❌ Erro ao carregar os dados:", e)
+        return None
+
+# Carregar dados de 2015 a 2019 (GitHub)
+df_2015 = carregar_dados(URL_DADOS_2015_2019, tipo='url')
+
+# Carregar dados de 2020 a 2024 (GitHub)
+df_2020 = carregar_dados(URL_DADOS_2020_2024, tipo='url')
+
+# Carregar dados gerais (Google Drive)
+df_geral = carregar_dados(CAMINHO_DADOS_GERAL, tipo='local')
 
